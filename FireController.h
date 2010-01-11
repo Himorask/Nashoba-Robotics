@@ -23,6 +23,9 @@ public:
 private:
 	void Run();
 	
-	LiftController *liftController;
-	Joystick joystick;
+	LiftController	*liftController;
+	Joystick		joystick;
+	Compressor		compressor;
+	
+	Solenoid		kicker;
 };
