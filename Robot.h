@@ -27,7 +27,14 @@ public:
 	Robot( void );
 	virtual ~Robot();
 	
+	/**
+	 *	Runs the robot in autonomous mode
+	 */
 	void Autonomous( void );
+	
+	/**
+	 *	Runs the robot in operator controlled mode.
+	 */
 	void OperatorControl( void );
 	
 private:

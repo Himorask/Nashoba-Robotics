@@ -11,6 +11,11 @@
 
 #include "WPILib.h"
 
+// Define pi if not defined already
+#ifndef PI
+#define PI 3.141592653f
+#endif
+
 class DriveController
 {
 public:

@@ -10,7 +10,8 @@
 #include "DriveController.h"
 
 DriveController :: DriveController()
-:	drive( 1, 2 ),
+// TODO: Change to actual values
+:	drive( 1, 2, 3, 4 ),
 	joystick( 1 )
 {
 }
@@ -30,10 +31,9 @@ void DriveController :: Run()
 
 void DriveController :: Autonomous()
 {
-	// Drive forward for two seconds
-	drive.Drive( 0.5, 0.0 );
-	Wait( 2.0f );
-	drive.Drive( 0.0, 0.0 );
+	drive.HolonomicDrive( 1.0f, PI, 0.0f );
+	Wait( 1.0f );
+	drive.HolonomicDrive( 0.0f, 0, 0.0f );
 }
 
 void DriveController :: OperatorControl()
@@ -42,7 +42,15 @@ void DriveController :: OperatorControl()
 	{
 		GetWatchdog().Feed();
 		
-		drive.ArcadeDrive( joystick );
+		int x = joystick.GetX();
+		int y = joystick.GetY();
+		
+		// TODO: I doubt the angle will be, but if it is not an angle from the
+		//		 front of the robot, that will need to be changed.
+		drive.HolonomicDrive( joystick.GetMagnitude(),
+							  joystick.GetDirectionRadians(),
+							  joystick.GetTwist() );
+		
 		Wait( 0.005f );
 	}
 }
