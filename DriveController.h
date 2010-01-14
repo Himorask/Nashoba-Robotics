@@ -10,6 +10,7 @@
 #pragma once
 
 #include "WPILib.h"
+#include "MecanumDrive.h"
 
 // Define pi if not defined already
 #ifndef PI
@@ -28,6 +29,10 @@ protected:
 	void Autonomous();
 	void OperatorControl();
 	
-	RobotDrive	drive;
-	Joystick	joystick;
+	Jaguar		 frontLeftMotor,
+				 frontRightMotor,
+				 backLeftMotor,
+				 backRightMotor;
+	MecanumDrive drive;
+	Joystick	 joystick;
 };

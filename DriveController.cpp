@@ -11,7 +11,11 @@
 
 DriveController :: DriveController()
 // TODO: Change to actual values
-:	drive( 1, 2, 3, 4 ),
+:	frontLeftMotor( 1 ),
+	frontRightMotor( 2 ),
+	backLeftMotor( 3 ),
+	backRightMotor( 4 ),
+	drive( &frontLeftMotor, &backLeftMotor, &frontRightMotor, &backRightMotor ),
 	joystick( 1 )
 {
 }
