@@ -26,8 +26,8 @@ void Robot :: Autonomous( void )
 	GetWatchdog().SetEnabled( false );
 	
 	// Create and start the fire controller thread
-	Thread fireControllerThread( FireController::ThreadEntry );
-	fireControllerThread.start( fireController );
+	Thread fireControllerThread( FireController );
+	fireControllerThread.Start( NULL );
 	
 	driveController.Run();
 }
