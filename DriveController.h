@@ -20,7 +20,7 @@
 class DriveController
 {
 public:
-	explicit DriveController();
+	DriveController();
 	virtual ~DriveController();
 	
 	void Run();
