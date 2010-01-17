@@ -10,22 +10,21 @@
 #pragma once
 
 #include "WPILib.h"
-#include "IRefCount.h"
+#include "IThreadable.h"
 
-class FireController : IRefCount
+/**
+ *	A fire controller class
+ *	To be implemented later.
+ */
+class FireController : IThreadable
 {
 public:
-	explicit FireController();
+	FireController();
 	virtual ~FireController();
-	
-	static void* ThreadEntry( void *fireController );
 	
 private:
 	void Run();
 	
 	LiftController	*liftController;
 	Joystick		joystick;
-	Compressor		compressor;
-	
-	Solenoid		kicker;
 };
