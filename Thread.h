@@ -11,6 +11,7 @@
 
 #include <pthread.h>
 #include "ThreadException.h"
+#include "IThreadable.h"
 
 /**
  *	A function reference to pass to a thread
@@ -35,26 +36,43 @@ public:
 	 *	@param function The function to be run when the thread is run
 	 */
 	explicit Thread( FunctionRef function );
+	
+	/**
+	 *	Creates a new thread which (indirectly) calls the Run method
+	 *	in threadable in a new thread.
+	 *	@param threadable An object containing the Run method to start
+	 *	the thread on
+	 */
+	explicit Thread( IThreadable *threadable );
+	
+	/**
+	 *	Destructor
+	 */
 	virtual ~Thread();
 	
 	/**
 	 *	Starts the thread by calling the entry point function in a new thread.
 	 *	@param userInfo An optional parameter for the function.
 	 */
-	void start( void *userInfo = NULL );
+	void Start( void *userInfo = NULL );
 	
 	/**
 	 *	Tests whether the thread is currently running.
 	 */
-	bool		isRunning();
+	bool		IsRunning();
 
+protected:
 	FunctionRef		function;
+	IRunnable		*object;
 	
 private:
 	pthread_t		thread;
 	
 	bool			running;
 	pthread_mutex_t	threadStartMutex;
+	
+	enum ThreadType { THREAD_TYPE_FUNCTION, THREAD_TYPE_CLASS };
+	ThreadType type;
 };
 
 /**

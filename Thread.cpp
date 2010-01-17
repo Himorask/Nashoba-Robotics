@@ -12,23 +12,52 @@
 Thread :: Thread( FunctionRef function )
 {
 	running = false;
+	type = THREAD_TYPE_FUNCTION;
 	this->function = function;
+}
+
+Thread :: Thread( IThreadable *threadable )
+{
+	running = false;
+	type = THREAD_TYPE_CLASS;
+	this->object = threadable;
 }
 
 Thread :: ~Thread()
 {
 }
 
-void Thread :: start( void *userInfo )
+void Thread :: Start( void *userInfo )
 {
+	// Lock the mutex to determine if it's running or not.
+	if ( pthread_mutex_lock( &threadStartMutex ) == 0 )
+		return;
+	
 	if ( running )
 		return;
 	
 	running = true;
-	pthread_create( &thread, NULL, function, userInfo );
+	
+	pthread_mutex_unlock( &threadStartMutex );
+	
+	// If it's a function pointer, call it
+	if ( type == THREAD_TYPE_FUNCTION )
+		pthread_create( &thread, NULL, function, userInfo );
+	
+	// Otherwise, if it's an IThreadable, run it
+	else if ( type == THREAD_TYPE_CLASS )
+	{
+		// This will be deleted in the ThreadEntry method.
+		IThreadable::UserInfoAndThreadable *infoAndEntry = new UserInfoAndThreadable();
+		
+		infoAndEntry->threadable = object;
+		infoAndEntry->userInfo = userInfo;
+		
+		pthread_create( &thread, NULL, IRunnable::ThreadEntry, infoAndEntry );
+	}
 }
 
-bool Thread :: isRunning()
+bool Thread :: IsRunning()
 {
 	return running;
 }
