@@ -8,6 +8,7 @@
  */
 
 #include "MecanumDrive.h"
+#include <math.h>
 
 #define ENFORCE_RANGE(value,min,max) if ( value < min ) value = min; if ( value > max ) value = max
 #define MOTOR_RANGE_MIN 1.0f
@@ -17,7 +18,7 @@ MecanumDrive :: MecanumDrive( SpeedController *frontLeftMotor,
 							  SpeedController *rearLeftMotor,
 							  SpeedController *frontRightMotor,
 							  SpeedController *rearRightMotor,
-							  float sensitivity = 0.5f )
+							  float sensitivity )
 : RobotDrive( frontLeftMotor,
 			  rearLeftMotor,
 			  frontRightMotor,
@@ -31,17 +32,17 @@ MecanumDrive :: MecanumDrive( SpeedController *frontLeftMotor,
 	this->rearRightMotor	= rearRightMotor;
 }
 
-RobotDrive :: ~RobotDrive()
+MecanumDrive :: ~MecanumDrive()
 {
 }
 
-void RobotDrive :: HolonomicDrive( float magnitude, float direction, float rotation )
+void MecanumDrive :: HolonomicDrive( float magnitude, float direction, float rotation )
 {
 	// Directions
 	// These will be from -1 to 1
 	float x, y;
-	x = sinf( direction ) * magnitude
-	y = cosf( direction ) * magnitude
+	x = sinf( direction ) * magnitude;
+	y = cosf( direction ) * magnitude;
 	
 	float leftFront, rightFront, leftRear, rightRear;
 	
@@ -53,10 +54,10 @@ void RobotDrive :: HolonomicDrive( float magnitude, float direction, float rotat
 	leftRear  = 1.0f - leftRear;
 	
 	// Add spin in there
-	rightFront = rightFront - spin + 0.5f;
-	rightRear  = rightRear  - spin + 0.5f;
-	leftFront  = leftFront  - spin + 0.5f;
-	leftRear   = leftRear   - spin + 0.5f;
+	rightFront = rightFront - rotation + 0.5f;
+	rightRear  = rightRear  - rotation + 0.5f;
+	leftFront  = leftFront  - rotation + 0.5f;
+	leftRear   = leftRear   - rotation + 0.5f;
 	
 	// Ensure that we're not sending bad values to the motors
 	ENFORCE_RANGE( rightFront, -1.0f, 1.0f );
@@ -65,8 +66,8 @@ void RobotDrive :: HolonomicDrive( float magnitude, float direction, float rotat
 	ENFORCE_RANGE( leftRear,   -1.0f, 1.0f );
 	
 	// Set the motors
-	frontLeftMotor ->Set( leftFront );
+	frontLeftMotor->Set( leftFront );
 	frontRightMotor->Set( rightFront );
-	rearLeftMotor  ->Set( leftRear );
-	rearRightMotor ->Set( rightRear );
+	rearLeftMotor->Set( leftRear );
+	rearRightMotor->Set( rightRear );
 }

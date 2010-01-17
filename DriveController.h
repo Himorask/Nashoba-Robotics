@@ -20,19 +20,19 @@
 class DriveController
 {
 public:
-	DriveController();
+	explicit DriveController( Watchdog *watchdog );
 	virtual ~DriveController();
 	
-	void Run();
-	
-protected:
 	void Autonomous();
 	void OperatorControl();
-	
+
+protected:
 	Jaguar		 frontLeftMotor,
 				 frontRightMotor,
 				 backLeftMotor,
 				 backRightMotor;
 	MecanumDrive drive;
 	Joystick	 joystick;
+	
+	Watchdog	 *watchdog;
 };

@@ -22,6 +22,8 @@ public:
 
 	virtual ~MecanumDrive();
 	
+	void HolonomicDrive( float magnitude, float direction, float rotation );
+	
 private:
 	SpeedController *frontLeftMotor,
 					*frontRightMotor,

@@ -9,28 +9,20 @@
 
 #include "DriveController.h"
 
-DriveController :: DriveController()
+DriveController :: DriveController( Watchdog *watchdog )
 // TODO: Change to actual values
-:	frontLeftMotor( 1 ),
-	frontRightMotor( 2 ),
-	backLeftMotor( 3 ),
-	backRightMotor( 4 ),
+:	frontLeftMotor(  4, 1 ),
+	frontRightMotor( 4, 2 ),
+	backLeftMotor(   4, 3 ),
+	backRightMotor(  4, 4 ),
 	drive( &frontLeftMotor, &backLeftMotor, &frontRightMotor, &backRightMotor ),
 	joystick( 1 )
 {
+	this->watchdog = watchdog;
 }
 
 DriveController :: ~DriveController()
 {
-}
-
-void DriveController :: Run()
-{
-	if ( IsAutonomous() )
-		Autonomous();
-	
-	else if ( IsOperatorControl() )
-		OperatorControl();
 }
 
 void DriveController :: Autonomous()
@@ -42,19 +34,12 @@ void DriveController :: Autonomous()
 
 void DriveController :: OperatorControl()
 {
-	while ( IsOperatorControl() )
-	{
-		GetWatchdog().Feed();
-		
-		int x = joystick.GetX();
-		int y = joystick.GetY();
-		
-		// TODO: I doubt the angle will be, but if it is not an angle from the
-		//		 front of the robot, that will need to be changed.
-		drive.HolonomicDrive( joystick.GetMagnitude(),
-							  joystick.GetDirectionRadians(),
-							  joystick.GetTwist() );
-		
-		Wait( 0.005f );
-	}
+	watchdog->Feed();
+	
+	// TODO: I doubt the angle will be, but if it is not an angle from the
+	//		 front of the robot, that will need to be changed.
+	drive.HolonomicDrive( joystick.GetMagnitude(),
+						  joystick.GetDirectionRadians(),
+						  joystick.GetTwist() );
+	Wait( 0.005f );
 }

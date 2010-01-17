@@ -13,8 +13,7 @@
 
 #include "DriveController.h"
 
-#include "Thread.h"
-#include "ThreadException.h"
+class DriveController;
 
 /**
  *	\brief The main robot class.
@@ -39,7 +38,6 @@ public:
 	
 private:
 	DriveController	driveController;
-	FireController	*fireController;
 };
 
 START_ROBOT_CLASS(Robot);

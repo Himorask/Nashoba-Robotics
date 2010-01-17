@@ -10,31 +10,25 @@
 #include "Robot.h"
 
 Robot :: Robot( void )
+:	driveController( &GetWatchdog() )
 {
 	GetWatchdog().SetExpiration( 0.1f );
-	
-	fireController = new FireController();
 }
 
 Robot :: ~Robot()
 {
-	fireController->release();
 }
 
 void Robot :: Autonomous( void )
 {
 	GetWatchdog().SetEnabled( false );
 	
-	// Create and start the fire controller thread
-	Thread fireControllerThread( FireController );
-	fireControllerThread.Start( NULL );
-	
-	driveController.Run();
+	driveController.Autonomous();
 }
 
 void Robot :: OperatorControl( void )
 {
 	GetWatchdog().SetEnabled( true );
 	
-	driveController.Run();
+	driveController.OperatorControl();
 }
