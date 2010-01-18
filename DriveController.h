@@ -31,7 +31,13 @@ protected:
 				 frontRightMotor,
 				 backLeftMotor,
 				 backRightMotor;
+	
+#ifdef OPTION_USE_WPILIB_MECANUM_DRIVE
+	RobotDrive	 drive;
+#else
 	MecanumDrive drive;
+#endif
+	
 	Joystick	 joystick;
 	
 	Watchdog	 *watchdog;
