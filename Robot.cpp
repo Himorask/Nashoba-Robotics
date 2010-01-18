@@ -13,28 +13,32 @@ Robot :: Robot( void )
 {
 	GetWatchdog().SetExpiration( 0.1f );
 	
-	fireController = new FireController();
+	// Start the camera
+	
+	// I think we need to stop the video server before doing this
+	// FIXME: Check this
+	videoServer.Stop();
+	
+	if ( StartCameraTask( 13, 0, k320x240, ROT_0 ) == -1 )
+		dprintf( LOG_ERROR, "Failed to spawn camera task: %s",
+				GetVisionErrorText( GetLastVisionError() ) );
+	
+	dprintf( LOG_DEBUG, "Waiting for camera to initialize" );
+	Wait( 2.0f );
+	
+	videoServer.Start();
 }
 
 Robot :: ~Robot()
 {
-	fireController->release();
 }
 
 void Robot :: Autonomous( void )
 {
 	GetWatchdog().SetEnabled( false );
-	
-	// Create and start the fire controller thread
-	Thread fireControllerThread( FireController );
-	fireControllerThread.Start( NULL );
-	
-	driveController.Run();
 }
 
 void Robot :: OperatorControl( void )
 {
 	GetWatchdog().SetEnabled( true );
-	
-	driveController.Run();
 }

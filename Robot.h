@@ -10,11 +10,8 @@
 #pragma once
 
 #include "WPILib.h"
-
-#include "DriveController.h"
-
-#include "Thread.h"
-#include "ThreadException.h"
+#include "AxisCamera.h"
+#include "PCVideoServer.h"
 
 /**
  *	\brief The main robot class.
@@ -38,8 +35,7 @@ public:
 	void OperatorControl( void );
 	
 private:
-	DriveController	driveController;
-	FireController	*fireController;
+	PCVideoServer videoServer;
 };
 
 START_ROBOT_CLASS(Robot);
