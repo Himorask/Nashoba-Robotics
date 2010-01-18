@@ -36,13 +36,20 @@ MecanumDrive :: ~MecanumDrive()
 {
 }
 
+/**
+ *	\brief Holnomic Drive convenience method
+ *
+ *	@param magnitude A magnitude from (I think) 0.0 to 1.0.
+ *	@param direction Direction in degrees and (I think) from the front of the robot.
+ *	@param rotation Rotation from -1.0 to 1.0
+ */
 void MecanumDrive :: HolonomicDrive( float magnitude, float direction, float rotation )
 {
-	// Directions
-	// These will be from -1 to 1
+	directionRad = direction * 180 / PI;
+	
 	float x, y;
-	x = sinf( direction ) * magnitude;
-	y = cosf( direction ) * magnitude;
+	x = sinf( directionRad ) * magnitude;
+	y = cosf( directionRad ) * magnitude;
 	
 	float leftFront, rightFront, leftRear, rightRear;
 	

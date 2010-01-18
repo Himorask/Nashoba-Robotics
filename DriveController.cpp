@@ -39,7 +39,7 @@ void DriveController :: OperatorControl()
 	// TODO: I doubt the angle will be, but if it is not an angle from the
 	//		 front of the robot, that will need to be changed.
 	drive.HolonomicDrive( joystick.GetMagnitude(),
-						  joystick.GetDirectionRadians(),
+						  joystick.GetDirectionDegrees(),
 						  joystick.GetTwist() );
 	Wait( 0.005f );
 }
