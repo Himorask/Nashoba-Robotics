@@ -11,10 +11,23 @@
 
 #include "WPILib.h"
 
+/**
+ *	\brief An override of the WPILib RobotDrive class to use mecanum drive
+ *
+ *	This will eventually be replaced with a PID/Closed Loop Control.
+ */
 class MecanumDrive : public RobotDrive
 {
 public:
-	MecanumDrive( SpeedController *frontLeftMotor,
+	/**
+	 *	\brief Creates a new mecanum drive object.
+	 *
+	 *	@param frontLeftMotor A pointer to the front left motor (Jaguar or Victor)
+	 *	@param rearLeftMotor A pointer to the rear left motor
+	 *	@param frontRightMotor A pointer to the front right motor
+	 *	@param rearRightMotor A pointer to the rear right motor
+	 */
+	explicit MecanumDrive( SpeedController *frontLeftMotor,
 				  SpeedController *rearLeftMotor,
 				  SpeedController *frontRightMotor,
 				  SpeedController *rearRightMotor,
@@ -22,6 +35,14 @@ public:
 
 	virtual ~MecanumDrive();
 	
+	/**
+	 *	\brief Drives using mecanum wheels.
+	 *
+	 *	@param magnitude The magnitude as a value between 0.0 and 1.0
+	 *	@param direction The direction as an angle in degrees and referencing
+	 *						the front of the robot.
+	 *	@param rotation  The rotation of the robot as a value between -1.0 and 1.0.
+	 */
 	void HolonomicDrive( float magnitude, float direction, float rotation );
 	
 private:
