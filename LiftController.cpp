@@ -10,7 +10,7 @@
 #include "LiftController.h"
 
 LiftController :: LiftController()
-:	IRefCount()
+:	IThreadable()
 {
 }
 
@@ -18,17 +18,7 @@ LiftController :: ~LiftController()
 {
 }
 
-static void* LiftController :: ThreadEntry( void *liftController )
-{
-	LiftController *lc = (LiftController *) liftController;
-	lc->retain();
-	
-	lc->Run();
-	
-	lc->release();
-	return NULL;
-}
-
 void LiftController :: Run()
-
+{
+	// TODO: Add lift controller run code here.
 }

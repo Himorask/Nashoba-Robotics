@@ -10,16 +10,14 @@
 #pragma once
 
 #include "WPILib.h"
-#include "IRefCount.h"
+#include "IThreadable.h"
 
-class LiftController : IRefCount
+class LiftController : IThreadable
 {
 public:
 	LiftController();
 	void ~LiftController();
-	
-	static void* ThreadEntry( void *liftController );
-	
+		
 	void Run();
 	
 private:
