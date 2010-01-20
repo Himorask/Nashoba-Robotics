@@ -22,9 +22,17 @@ public:
 	FireController();
 	virtual ~FireController();
 	
+	void SetAutonomous();
+	void SetOperatorControl();
+	
 private:
 	void Run();
 	
+	Kicker			kicker;
 	LiftController	*liftController;
 	Joystick		joystick;
+	
+	RobotState state;
+	
+	enum RobotState { RobotStateAutonomous = 1, RobotStateOperatorControl = 2 };
 };

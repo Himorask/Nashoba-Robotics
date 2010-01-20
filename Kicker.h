@@ -1,4 +1,4 @@
-/*
+	/*
  *  Kicker.h
  *  
  *
@@ -29,10 +29,26 @@ public:
 	virtual ~Kicker();
 	
 	/**
-	 *	Winds up and kicks with a certain power.
-	 *	This will be replaced with a kick-then-wind system.
+	 *	Releases the pneumatic to kick, then winds the motor back up
+	 *
+	 *	This currently assumes that we're using a solenoid.
+	 *
+	 *	It will wind the motor back up with the given power
+	 *	@param power Power to kick with
 	 */
-	void Kick( float power );
+	void Kick( float power = 1 );
+	
+	class KickerException : public std::exception
+	{
+	public:
+		explicit KickerException( const std::string description );
+		virtual ~KickerException();
+		
+		virtual const std::string Description() const throw();
+		
+	private:
+		std::string description;
+	};
 	
 private:
 	Encoder encoder;

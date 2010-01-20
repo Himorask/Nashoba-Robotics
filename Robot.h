@@ -12,6 +12,7 @@
 #include "WPILib.h"
 
 #include "DriveController.h"
+#include "FireController.h"
 
 #include "Thread.h"
 #include "ThreadException.h"
@@ -36,6 +37,13 @@ public:
 	 *	Runs the robot in operator controlled mode.
 	 */
 	void OperatorControl( void );
+	
+	enum RobotState
+	{
+		RobotStateDisabled = 0,
+		RobotStateAutonomous = 1,
+		RobotStateOperatorControl = 2
+	};
 	
 private:
 	DriveController	driveController;

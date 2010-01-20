@@ -29,18 +29,37 @@ void Kicker :: Kick( float power )
 {
 	if ( power > 1.0f || power < 0 )
 	{
-		throw 1;
+		throw KickerException( "Invalid power value" );
 		return;
 	}
 	
+	// Release the solenoid
+	solenoid.Set( false );
+	Wait( 1 );
+	lastFired = encoder.Get();
+	
+	// Wind up the motor
 	while ( encoder.Get() < lastFired + (power * kWoundTicks) )
 	{
 		motor.Set( 0.7f );
 		Wait( 0.005f );
 	}
-	
 	motor.Set( 0.0f );
-	lastFired = encoder.Get();
 	
-	solenoid.Set( false );
+	// Reaffix the solenoid
+	solenoid.Set( true );
+}
+
+Kicker :: KickerException :: KickerException( const std::string description )
+{
+	this->description = description;
+}
+
+Kicker :: KickerException :: ~KickerException()
+{
+}
+
+const std::string Kicker :: KickerException :: Description() const throw()
+{
+	return description;
 }

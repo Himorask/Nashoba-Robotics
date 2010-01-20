@@ -14,6 +14,18 @@ Robot :: Robot( void )
 	GetWatchdog().SetExpiration( 0.1f );
 	
 	fireController = new FireController();
+	
+	try
+	{
+		// Create and start the fire controller thread
+		Thread fireControllerThread( FireController );
+		fireControllerThread.Start();
+	}
+	
+	catch ( Kicker::KickerException &e )
+	{
+		cout << e.Description();
+	}
 }
 
 Robot :: ~Robot()
@@ -25,16 +37,14 @@ void Robot :: Autonomous( void )
 {
 	GetWatchdog().SetEnabled( false );
 	
-	// Create and start the fire controller thread
-	Thread fireControllerThread( FireController );
-	fireControllerThread.Start( NULL );
-	
-	driveController.Run();
+	fireController->SetAutonomous();
+	driveController.Autonomous();
 }
 
 void Robot :: OperatorControl( void )
 {
 	GetWatchdog().SetEnabled( true );
 	
-	driveController.Run();
+	fireController->SetOperatorControl();
+	driveController.OperatorControl();
 }
