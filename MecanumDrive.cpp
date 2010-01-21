@@ -10,20 +10,31 @@
 #include "MecanumDrive.h"
 #include <math.h>
 
-#define ENFORCE_RANGE(value,min,max) if ( value < min ) value = min; if ( value > max ) value = max
-#define MOTOR_RANGE_MIN 1.0f
-#define MOTOR_RANGE_MAX 1.0f
+#ifndef PI
+#define PI 3.141592653f
+#endif
 
-MecanumDrive :: MecanumDrive( SpeedController *frontLeftMotor,
-							  SpeedController *rearLeftMotor,
-							  SpeedController *frontRightMotor,
-							  SpeedController *rearRightMotor,
+MecanumDrive :: MecanumDrive( Jaguar *frontLeftMotor,
+							  Jaguar *rearLeftMotor,
+							  Jaguar *frontRightMotor,
+							  Jaguar *rearRightMotor,
 							  float sensitivity )
-: RobotDrive( frontLeftMotor,
-			  rearLeftMotor,
-			  frontRightMotor,
-			  rearRightMotor,
-			  sensitivity )
+:	RobotDrive( frontLeftMotor,
+			    rearLeftMotor,
+			    frontRightMotor,
+			    rearRightMotor,
+			    sensitivity ),
+	// Encoders
+	frontLeftEncoder( 1, 2 ),
+	frontRightEncoder( 3, 4 ),
+	rearLeftEncoder( 5, 6 ),
+	rearRightEncoder( 7, 8 ),
+	
+	// PIDs
+	frontLeftPID(	kPIDProportional, kPIDIntegral, kPIDDerivitive, &frontLeftEncoder,	frontLeftMotor	),
+	frontRightPID(	kPIDProportional, kPIDIntegral, kPIDDerivitive, &frontRightEncoder, frontRightMotor ),
+	rearLeftPID(	kPIDProportional, kPIDIntegral, kPIDDerivitive, &rearLeftEncoder,	rearLeftMotor	),
+	rearRightPID(	kPIDProportional, kPIDIntegral, kPIDDerivitive, &rearRightEncoder,	rearRightMotor	)
 {
 	// Store pointers to the motors
 	this->frontLeftMotor	= frontLeftMotor;
@@ -38,36 +49,14 @@ MecanumDrive :: ~MecanumDrive()
 
 void MecanumDrive :: HolonomicDrive( float magnitude, float direction, float rotation )
 {
-	directionRad = direction * 180 / PI;
+	// Convert angle and magnitude to x and y coordinates
+	float x = magnitude * cos( direction * 180 / PI );
+	float y = magnitude * sin( direction * 180 / PI );
 	
-	float x, y;
-	x = sinf( directionRad ) * magnitude;
-	y = cosf( directionRad ) * magnitude;
-	
-	float leftFront, rightFront, leftRear, rightRear;
-	
-	leftFront = rightRear = y - x + 1.0f;
-	rightFront = leftRear = 1.0f - y - x;
-	
-	// Reverse the direction of the rear motors
-	rightRear = 1.0f - rightRear;
-	leftRear  = 1.0f - leftRear;
-	
-	// Add spin in there
-	rightFront = rightFront - rotation + 0.5f;
-	rightRear  = rightRear  - rotation + 0.5f;
-	leftFront  = leftFront  - rotation + 0.5f;
-	leftRear   = leftRear   - rotation + 0.5f;
-	
-	// Ensure that we're not sending bad values to the motors
-	ENFORCE_RANGE( rightFront, -1.0f, 1.0f );
-	ENFORCE_RANGE( rightRear,  -1.0f, 1.0f );
-	ENFORCE_RANGE( leftFront,  -1.0f, 1.0f );
-	ENFORCE_RANGE( leftRear,   -1.0f, 1.0f );
-	
-	// Set the motors
-	frontLeftMotor->Set( leftFront );
-	frontRightMotor->Set( rightFront );
-	rearLeftMotor->Set( leftRear );
-	rearRightMotor->Set( rightRear );
+	// Sets the PID setpoints to their mecanum values
+	// according to the NASA spec
+	frontLeftPID.SetSetpoint(  ( x + y ) / kDriveXYSensitivity + rotation / kDriveZSensitivity );
+	frontRightPID.SetSetpoint( ( x - y ) / kDriveXYSensitivity - rotation / kDriveZSensitivity );
+	rearLeftPID.SetSetpoint(   ( x - y ) / kDriveXYSensitivity + rotation / kDriveZSensitivity );
+	rearRightPID.SetSetpoint(  ( x + y ) / kDriveXYSensitivity - rotation / kDriveZSensitivity );
 }
