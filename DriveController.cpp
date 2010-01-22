@@ -16,7 +16,8 @@ DriveController :: DriveController( Watchdog *watchdog )
 	backLeftMotor(   4, 3 ),
 	backRightMotor(  4, 4 ),
 	drive( &frontLeftMotor, &backLeftMotor, &frontRightMotor, &backRightMotor ),
-	joystick( 1 )
+	joystick( 1 ),
+	gyro( 4, 5 )
 {
 	this->watchdog = watchdog;
 }
@@ -39,7 +40,7 @@ void DriveController :: OperatorControl()
 	// TODO: I doubt the angle will be, but if it is not an angle from the
 	//		 front of the robot, that will need to be changed.
 	drive.HolonomicDrive( joystick.GetMagnitude(),
-						  joystick.GetDirectionDegrees(),
+						  (float) ((joystick.GetDirectionDegrees() + gyro.GetAngle()) % 360),
 						  joystick.GetTwist() );
 	Wait( 0.005f );
 }

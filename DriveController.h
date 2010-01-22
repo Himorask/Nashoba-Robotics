@@ -37,8 +37,8 @@ protected:
 #else
 	MecanumDrive drive;
 #endif
-	
 	Joystick	 joystick;
+	Gyro		 gyro;
 	
 	Watchdog	 *watchdog;
 };
