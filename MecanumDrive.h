@@ -10,6 +10,7 @@
 #pragma once
 
 #include "WPILib.h"
+#include "PIDEncoder.h"
 
 /**
  *	\brief An override of the WPILib RobotDrive class to use mecanum drive
@@ -22,16 +23,16 @@ public:
 	/**
 	 *	\brief Creates a new mecanum drive object.
 	 *
-	 *	@param frontLeftMotor A pointer to the front left motor (Jaguar or Victor)
-	 *	@param rearLeftMotor A pointer to the rear left motor
-	 *	@param frontRightMotor A pointer to the front right motor
-	 *	@param rearRightMotor A pointer to the rear right motor
+	 *	@param frontLeftMotor	A pointer to the front left motor
+	 *	@param rearLeftMotor	A pointer to the rear left motor
+	 *	@param frontRightMotor	A pointer to the front right motor
+	 *	@param rearRightMotor	A pointer to the rear right motor
 	 */
-	explicit MecanumDrive( SpeedController *frontLeftMotor,
-				  SpeedController *rearLeftMotor,
-				  SpeedController *frontRightMotor,
-				  SpeedController *rearRightMotor,
-				  float sensitivity = 0.5 );
+	explicit MecanumDrive( Jaguar *frontLeftMotor,
+						   Jaguar *rearLeftMotor,
+						   Jaguar *frontRightMotor,
+						   Jaguar *rearRightMotor,
+						   float sensitivity = 0.5 );
 
 	virtual ~MecanumDrive();
 	
@@ -45,9 +46,28 @@ public:
 	 */
 	void HolonomicDrive( float magnitude, float direction, float rotation );
 	
+	// Various PID constants
+	// TODO: Test and find values for constants
+	static const float kPIDProportional		= 1.0f;
+	static const float kPIDIntegral			= 0.0f;
+	static const float kPIDDerivitive		= 0.0f;
+	
+	static const float kDriveXYSensitivity	= 1.0f;
+	static const float kDriveZSensitivity	= 1.0f;
+	
 private:
-	SpeedController *frontLeftMotor,
+	Jaguar			*frontLeftMotor,
 					*frontRightMotor,
 					*rearLeftMotor,
 					*rearRightMotor;
+	
+	PIDEncoder		frontLeftEncoder,
+					frontRightEncoder,
+					rearLeftEncoder,
+					rearRightEncoder;
+	
+	PIDController	frontLeftPID,
+					frontRightPID,
+					rearLeftPID,
+					rearRightPID;
 };
