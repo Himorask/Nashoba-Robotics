@@ -25,10 +25,10 @@ MecanumDrive :: MecanumDrive( Jaguar *frontLeftMotor,
 			    rearRightMotor,
 			    sensitivity ),
 	// Encoders
-	frontLeftEncoder( 1, 2 ),
-	frontRightEncoder( 3, 4 ),
-	rearLeftEncoder( 5, 6 ),
-	rearRightEncoder( 7, 8 ),
+	frontLeftEncoder(	1, 2 ),
+	frontRightEncoder(	3, 4 ),
+	rearLeftEncoder(	5, 6 ),
+	rearRightEncoder(	7, 8 ),
 	
 	// PIDs
 	frontLeftPID(	kPIDProportional, kPIDIntegral, kPIDDerivitive, &frontLeftEncoder,	frontLeftMotor	),
@@ -49,14 +49,16 @@ MecanumDrive :: ~MecanumDrive()
 
 void MecanumDrive :: HolonomicDrive( float magnitude, float direction, float rotation )
 {
-	// Convert angle and magnitude to x and y coordinates
-	float x = magnitude * cos( direction * 180 / PI );
-	float y = magnitude * sin( direction * 180 / PI );
+	float cosD = cosf( (direction + 45.0f) * PI / 180.0f );
+	float sinD = sinf( (direction - 45.0f) * PI / 180.0f );
 	
-	// Sets the PID setpoints to their mecanum values
-	// according to the NASA spec
-	frontLeftPID.SetSetpoint(  ( x + y ) / kDriveXYSensitivity + rotation / kDriveZSensitivity );
-	frontRightPID.SetSetpoint( ( x - y ) / kDriveXYSensitivity - rotation / kDriveZSensitivity );
-	rearLeftPID.SetSetpoint(   ( x - y ) / kDriveXYSensitivity + rotation / kDriveZSensitivity );
-	rearRightPID.SetSetpoint(  ( x + y ) / kDriveXYSensitivity - rotation / kDriveZSensitivity );
+	float frontLeftSpeed	= ENFORCE_RANGE( sinD * magnitude + rotation );
+	float rearLeftSpeed		= ENFORCE_RANGE( cosD * magnitude + rotation );
+	float frontRightSpeed	= ENFORCE_RANGE( cosD * magnitude - rotation );
+	float rearRightSpeed	= ENFORCE_RANGE( sinD * magnitude - rotation );
+	
+	frontLeftPID->SetSetpoint(	frontLeftSpeed );
+	rearLeftPID->SetSetpoint(	rearLeftSpeed );
+	frontRightPID->SetSetpoint(	frontRightSpeed );
+	rearRightPID->SetSetpoint(	rearRightSpeed );
 }
