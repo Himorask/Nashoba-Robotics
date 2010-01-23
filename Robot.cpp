@@ -20,10 +20,9 @@ Robot :: Robot( void )
 	videoServer.Stop();
 	
 	if ( StartCameraTask( 13, 0, k320x240, ROT_0 ) == -1 )
-		dprintf( LOG_ERROR, "Failed to spawn camera task: %s",
-				GetVisionErrorText( GetLastVisionError() ) );
+		dprintf( LOG_ERROR, "Failed to spawn camera task: %s", GetVisionErrorText( GetLastVisionError() ) );
 	
-	dprintf( LOG_DEBUG, "Waiting for camera to initialize" );
+	// Camera startup timeout
 	Wait( 2.0f );
 	
 	videoServer.Start();
