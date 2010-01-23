@@ -46,28 +46,9 @@ public:
 	 */
 	void HolonomicDrive( float magnitude, float direction, float rotation );
 	
-	// Various PID constants
-	// TODO: Test and find values for constants
-	static const float kPIDProportional		= 1.0f;
-	static const float kPIDIntegral			= 0.0f;
-	static const float kPIDDerivitive		= 0.0f;
-	
-	static const float kDriveXYSensitivity	= 1.0f;
-	static const float kDriveZSensitivity	= 1.0f;
-	
 private:
 	Jaguar			*frontLeftMotor,
 					*frontRightMotor,
 					*rearLeftMotor,
 					*rearRightMotor;
-	
-	PIDEncoder		frontLeftEncoder,
-					frontRightEncoder,
-					rearLeftEncoder,
-					rearRightEncoder;
-	
-	PIDController	frontLeftPID,
-					frontRightPID,
-					rearLeftPID,
-					rearRightPID;
 };

@@ -23,18 +23,7 @@ MecanumDrive :: MecanumDrive( Jaguar *frontLeftMotor,
 			    rearLeftMotor,
 			    frontRightMotor,
 			    rearRightMotor,
-			    sensitivity ),
-	// Encoders
-	frontLeftEncoder(	1, 2 ),
-	frontRightEncoder(	3, 4 ),
-	rearLeftEncoder(	5, 6 ),
-	rearRightEncoder(	7, 8 ),
-	
-	// PIDs
-	frontLeftPID(	kPIDProportional, kPIDIntegral, kPIDDerivitive, &frontLeftEncoder,	frontLeftMotor	),
-	frontRightPID(	kPIDProportional, kPIDIntegral, kPIDDerivitive, &frontRightEncoder, frontRightMotor ),
-	rearLeftPID(	kPIDProportional, kPIDIntegral, kPIDDerivitive, &rearLeftEncoder,	rearLeftMotor	),
-	rearRightPID(	kPIDProportional, kPIDIntegral, kPIDDerivitive, &rearRightEncoder,	rearRightMotor	)
+			    sensitivity )
 {
 	// Store pointers to the motors
 	this->frontLeftMotor	= frontLeftMotor;
@@ -57,8 +46,8 @@ void MecanumDrive :: HolonomicDrive( float magnitude, float direction, float rot
 	float frontRightSpeed	= ENFORCE_RANGE( cosD * magnitude - rotation );
 	float rearRightSpeed	= ENFORCE_RANGE( sinD * magnitude - rotation );
 	
-	frontLeftPID->SetSetpoint(	frontLeftSpeed );
-	rearLeftPID->SetSetpoint(	rearLeftSpeed );
-	frontRightPID->SetSetpoint(	frontRightSpeed );
-	rearRightPID->SetSetpoint(	rearRightSpeed );
+	frontLeftMotor->Set(	frontLeftSpeed );
+	rearLeftMotor->Set(		rearLeftSpeed );
+	frontRightMotor->Set(	frontRightSpeed );
+	rearRightMotor->Set(	rearRightSpeed );
 }
