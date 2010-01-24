@@ -39,7 +39,7 @@ protected:
 	 *	Runs an IThreadable object. This is called by the Thread object when
 	 *	run.
 	 */
-	virtual void Run() = 0;
+	virtual void Run() throw () = 0;
 	
 private:
 	static void* ThreadEntry( void *infoAndObject );

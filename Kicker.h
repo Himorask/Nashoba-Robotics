@@ -36,7 +36,7 @@ public:
 	 *	It will wind the motor back up with the given power
 	 *	@param power Power to kick with
 	 */
-	void Kick( float power = 1 );
+	void Kick( float power = 1.0f );
 	
 	class KickerException : public std::exception
 	{
