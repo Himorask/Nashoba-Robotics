@@ -1,4 +1,4 @@
-	/*
+/*
  *  Kicker.h
  *  
  *
@@ -21,7 +21,7 @@ public:
 	 *	@param encoderChannel2 The encoder
 	 */
 	explicit Kicker( UINT32 motorChannel, UINT32 pneumaticChannel,
-					 UINT32 encoderChannel1, UINT32 encoderChannel2 );
+					 UINT32 currentSensorSlot, UINT32 currentSensorChannel );
 	
 	/**
 	 *	Destroys the encoder
@@ -38,6 +38,20 @@ public:
 	 */
 	void Kick( float power = 1.0f );
 	
+	/**
+	 *	Releases the latch and fires
+	 */
+	void ReleaseLatch();
+	
+	/**
+	 *	Pull back the elastic
+	 *	@param back True - pulls back; False - Push Forward
+	 */
+	void SetElastic( bool back );
+	
+	/**
+	 *	A kicker exception class
+	 */
 	class KickerException : public std::exception
 	{
 	public:
@@ -51,12 +65,17 @@ public:
 	};
 	
 private:
-	Encoder encoder;
 	Victor	motor;
 	Solenoid pneumatic;
+	AnalogChannel currentSensor;
 	
 	int		lastFired;
 	
-	// TODO: Make this a real value
-	const int kWoundTicks = 10;
+	// TODO: Get values
+	const float kCurrentSensorMaxCurrent = 10.0f;
+	
+	// Timeouts
+	const float kSolenoidTimeout	= 0.5f;
+	const float kMotorTimeout		= 0.005f;
+	const float kCurrentSensorTimeout = 0.005f;
 };

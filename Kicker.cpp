@@ -10,9 +10,9 @@
 #include "Kicker.h"
 
 Kicker :: Kicker( UINT32 motorChannel, UINT32 pneumaticChannel,
-				  UINT32 encoderChannel1, UINT32 encoderChannel2 )
+				  UINT32 currentSensorSlot, UINT32 currentSensorChannel )
 :	motor( motorChannel ),
-	encoder( encoderChannel1, encoderChannel2 ),
+	currentSensor( currentSensorSlot, currentSensorChannel ),
 	solenoid( 4, pneumaticChannel )
 {
 	// Start the encoder
@@ -27,27 +27,40 @@ Kicker :: ~Kicker()
 
 void Kicker :: Kick( float power )
 {
+	// Assume the kicker is cocked.
+	
 	if ( power > 1.0f || power < 0 )
 	{
 		throw KickerException( "Invalid power value" );
 		return;
 	}
 	
-	// Release the solenoid
-	solenoid.Set( false );
-	Wait( 1 );
-	lastFired = encoder.Get();
+	ReleaseLatch();
 	
-	// Wind up the motor
-	while ( encoder.Get() < lastFired + (power * kWoundTicks) )
-	{
-		motor.Set( 0.7f );
-		Wait( 0.005f );
-	}
-	motor.Set( 0.0f );
+	// Re-cock the kicker
+	SetElastic( true );
+}
+
+void Kicker :: ReleaseLatch()
+{
+	// Fire the solenoid, which will open the latch
+	pneumatic.Set( true );
 	
-	// Reaffix the solenoid
-	solenoid.Set( true );
+	// Wait for the pneumatic to fire, then reset it
+	Wait( kSolenoidTimeout );
+	pneumatic.Set( false );
+}
+
+void Kicker :: SetElastic( bool back )
+{
+	if ( back )
+		motor.Set( -1.0 );
+	else
+		motor.Set( 1.0 );
+	
+	// GetVoltage() returns a value from -10V to 10V
+	while ( currentSensor.GetVoltage() < kCurrentSensorMaximumCurrent )
+		Wait( kCurrentSensorTimeout );
 }
 
 Kicker :: KickerException :: KickerException( const std::string description )
